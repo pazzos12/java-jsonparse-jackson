@@ -1,33 +1,35 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 public class Parse {
 
-    private final static String JSON_WEATHER_PATH = "weather.json";
+	private static String JSON_WEATHER_PATH = "weather.json";
 
     public static void main(String[] args) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            // write your code here !
+            JsonNode root = objectMapper.readTree(new File("/home/wilder/Bureau/eclipse-workspace/java-jsonparse-jackson/weather.json"));
 
-            // TODO : get the root from the file JSON_WEATHER_PATH
-            JsonNode root = null;
 
-            // TODO : get the value of "name" attribute
-            String cityName = null;
+         // TODO : get the value of "name" attribute
+            String cityName = root.get("name").asText();
 
-            // TODO : get the "lat" and "lon" values of the "coord"
-            Double cityLatitude = null;
-            Double cityLongitude = null;
+            
+		// TODO : get the "lat" and "lon" values of the "coord"
+            JsonNode coordObject = root.get("coord");
+            Double cityLatitude = coordObject.get("lat").asDouble();
+            Double cityLongitude = coordObject.get("lon").asDouble();
 
-            // TODO : get the "wind" attribute as an Wind object
-            Wind wind = null;
+       // TODO : get the "wind" attribute as a Wind object
+            Wind wind = objectMapper.convertValue(root.get("wind"), Wind.class);
 
             // TODO : get the "weather" attribute as an array of Weather objects
-            Weather[] weathers = {};
+            Weather[] weathers = objectMapper.convertValue(root.get("weather"), Weather[].class);
 
             // Don't touch this !
             System.out.printf("City name: %s%n", cityName);
